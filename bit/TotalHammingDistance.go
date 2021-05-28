@@ -28,8 +28,8 @@ func totalHammingDistance(nums []int) int {
 	cnt := 0
 	for i := 0; i < 32; i++ {
 		oneCnt := 0
-		for j := range nums {
-			if nums[j]&(1<<i) != 0 {
+		for _, val := range nums {
+			if val&(1<<i) != 0 {
 				oneCnt++
 			}
 		}
