@@ -41,7 +41,7 @@ package bit
 来源：力扣（LeetCode）
 链接：https://leetcode-cn.com/problems/power-of-two
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
- */
+*/
 
 func isPowerOfTwo(n int) bool {
 	for i := 0; i < 31; i++ {
@@ -50,4 +50,11 @@ func isPowerOfTwo(n int) bool {
 		}
 	}
 	return false
+}
+
+func isPowerOfTwo2(n int) bool {
+	if n == 1<<31 {
+		return false
+	}
+	return n > 0 && n&(n-1) == 0
 }
