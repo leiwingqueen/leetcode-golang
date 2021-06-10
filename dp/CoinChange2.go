@@ -95,6 +95,11 @@ func change2(amount int, coins []int) int {
 
 /**
 空间优化
+
+挺巧妙的，由于
+f(k,n)=f(k,n-coins[k-1])+f(k-1,n)
+
+f(k,n)和f(k-1,n)属于同一列的数据，我们可以少存f(k-1,n)，直接在原来的元素上面累加即可
 */
 func change3(amount int, coins []int) int {
 	len := len(coins)
