@@ -82,3 +82,43 @@ func makePal(s string, l int, r int) int {
 	}
 	return cnt
 }
+
+/**
+代码优化，增加预处理
+*/
+func palindromePartition2(s string, k int) int {
+	//预处理makePal
+	cost := make([][]int, len(s))
+	for i := 0; i < len(s); i++ {
+		cost[i] = make([]int, len(s))
+	}
+	for i := len(s) - 2; i >= 0; i-- {
+		for j := i + 1; j < len(s); j++ {
+			cost[i][j] = cost[i+1][j-1]
+			if s[i] != s[j] {
+				cost[i][j] += 1
+			}
+		}
+	}
+	dp := make([][]int, len(s)+1)
+	for i := 0; i <= len(s); i++ {
+		dp[i] = make([]int, k+1)
+	}
+	//初始化
+	for i := 1; i <= len(s); i++ {
+		dp[i][1] = cost[0][i-1]
+	}
+	for i := 2; i <= len(s); i++ {
+		for j := 2; j <= k && j <= i; j++ {
+			min := math.MaxInt32
+			for m := i - 1; m > 0 && m >= j-1; m-- {
+				r := dp[m][j-1] + cost[m][i-1]
+				if r < min {
+					min = r
+				}
+			}
+			dp[i][j] = min
+		}
+	}
+	return dp[len(s)][k]
+}
