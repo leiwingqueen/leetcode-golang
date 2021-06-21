@@ -44,8 +44,8 @@ s 中只含有小写英文字母。
 */
 
 /**
-时间复杂度O(n^2*k)
- */
+时间复杂度O(n^3*k)
+*/
 func palindromePartition(s string, k int) int {
 	dp := make([][]int, len(s)+1)
 	for i := 0; i <= len(s); i++ {
@@ -70,6 +70,7 @@ func palindromePartition(s string, k int) int {
 	return dp[len(s)][k]
 }
 
+//TODO:这里可以使用DP进行预处理
 func makePal(s string, l int, r int) int {
 	cnt := 0
 	for l < r {
