@@ -2,13 +2,13 @@ package backtrace
 
 func permutation(s string) []string {
 	res := make([]string, 0, 100)
-	backtrace([]byte(s), make([]byte, len(s)), 0, res)
+	backtrace([]byte(s), make([]byte, len(s)), 0, &res)
 	return res
 }
 
-func backtrace(s []byte, path []byte, idx int, res []string) {
+func backtrace(s []byte, path []byte, idx int, res *[]string) {
 	if idx == len(s) {
-		res = append(res, string(path))
+		*res = append(*res, string(path))
 		return
 	}
 	set := make(map[byte]bool)
