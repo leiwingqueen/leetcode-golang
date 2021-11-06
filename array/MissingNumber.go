@@ -50,3 +50,15 @@ func missingNumber(nums []int) int {
 	s := (1 + len(nums)) * len(nums) / 2
 	return s - sum
 }
+
+//异或
+func missingNumber2(nums []int) int {
+	xor := 0
+	for i := 0; i <= len(nums); i++ {
+		xor ^= i
+	}
+	for _, num := range nums {
+		xor ^= num
+	}
+	return xor
+}
