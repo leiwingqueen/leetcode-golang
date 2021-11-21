@@ -1,5 +1,7 @@
 package array
 
+import "sort"
+
 //594. 最长和谐子序列
 //和谐数组是指一个数组里元素的最大值和最小值之间的差别 正好是 1 。
 //
@@ -33,7 +35,7 @@ package array
 //链接：https://leetcode-cn.com/problems/longest-harmonious-subsequence
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-//
+//hash
 func findLHS(nums []int) int {
 	mp := make(map[int]int)
 	for _, num := range nums {
@@ -45,16 +47,33 @@ func findLHS(nums []int) int {
 	}
 	max := 0
 	for k, v := range mp {
-		if v1, exist := mp[k-1]; exist {
+		if v1, exist := mp[k+1]; exist {
 			if v1+v > max {
 				max = v1 + v
 			}
 		}
-		if v2, exist := mp[k+1]; exist {
-			if v2+v > max {
-				max = v2 + v
+	}
+	return max
+}
+
+//滑动窗口
+func findLHS2(nums []int) int {
+	sort.Ints(nums)
+	l := 0
+	r := 0
+	max := 0
+	for r < len(nums) {
+		if l == r || nums[l] == nums[r] || nums[r] == nums[l]+1 {
+			r++
+		} else {
+			if nums[r] == nums[l]+1 && r-l > max {
+				max = r - l
 			}
+			l++
 		}
+	}
+	if nums[r-1] == nums[l]+1 && r-l > max {
+		max = r - l
 	}
 	return max
 }
