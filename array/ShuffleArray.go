@@ -57,7 +57,7 @@ func (this *Solution) Reset() []int {
 	return this.nums
 }
 
-//O(n)的时间复杂度
+//O(n)的时间复杂度，其实这里可以改成非递归
 func (this *Solution) Shuffle() []int {
 	var dfs func(nums []int, idx int, res []int)
 	dfs = func(nums []int, idx int, res []int) {
