@@ -50,6 +50,7 @@ package array
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 //X和O的数量相差最多1，且满足胜负条件的线最多只有一条
+//不通过，这种解法是不严谨的
 func validTicTacToe(board []string) bool {
 	cnt1 := 0
 	cnt2 := 0
@@ -97,10 +98,104 @@ func validTicTacToe(board []string) bool {
 	return win <= 1
 }
 
-func abs(a int) int {
-	if a < 0 {
-		return -a
-	} else {
-		return a
+//去掉最后下掉的一颗子，则board的状态必须是没有结束的状态
+func validTicTacToe2(board []string) bool {
+	size := 3
+	matrix := make([][]byte, size)
+	for i := 0; i < size; i++ {
+		matrix[i] = make([]byte, size)
 	}
+	cnt1 := 0
+	cnt2 := 0
+	for i := 0; i < size; i++ {
+		for j := 0; j < size; j++ {
+			matrix[i][j] = board[i][j]
+			if matrix[i][j] == 'X' {
+				cnt1++
+			} else if matrix[i][j] == 'O' {
+				cnt2++
+			}
+		}
+	}
+	if cnt2 > cnt1 || cnt1-cnt2 > 1 {
+		return false
+	}
+	if cnt1 == 0 && cnt2 == 0 {
+		return true
+	}
+	var check = func(matrix [][]byte) bool {
+		//横线
+		for i := 0; i < size; i++ {
+			j := 0
+			for j < size {
+				if matrix[i][j] == ' ' || (j > 0 && matrix[i][j] != matrix[i][j-1]) {
+					break
+				}
+				j++
+			}
+			if j == size {
+				return false
+			}
+		}
+		//竖线
+		for i := 0; i < size; i++ {
+			j := 0
+			for j < size {
+				if matrix[j][i] == ' ' || (j > 0 && matrix[j][i] != matrix[j-1][i]) {
+					break
+				}
+				j++
+			}
+			if j == size {
+				return false
+			}
+		}
+		//斜线
+		x := 0
+		y := 0
+		for x < size {
+			if matrix[x][y] == ' ' || (x > 0 && matrix[x][y] != matrix[x-1][y-1]) {
+				break
+			}
+			x++
+			y++
+		}
+		if x == size {
+			return false
+		}
+		x = 0
+		y = size - 1
+		for x < size {
+			if matrix[x][y] == ' ' || (x > 0 && matrix[x][y] != matrix[x-1][y+1]) {
+				break
+			}
+			x++
+			y--
+		}
+		if x == size {
+			return false
+		}
+		return true
+	}
+	if check(matrix) {
+		return true
+	}
+	//尝试去掉一个子，X>O的数量证明最后下的是X，反之是O
+	last := byte('O')
+	if cnt1 > cnt2 {
+		last = byte('X')
+	}
+	for i := 0; i < size; i++ {
+		for j := 0; j < size; j++ {
+			if matrix[i][j] == last {
+				tmp := matrix[i][j]
+				matrix[i][j] = ' '
+				if check(matrix) {
+					return true
+				}
+				matrix[i][j] = tmp
+			}
+		}
+	}
+	return false
 }
