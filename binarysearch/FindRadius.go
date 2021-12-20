@@ -1,5 +1,7 @@
 package binarysearch
 
+import "sort"
+
 //冬季已经来临。 你的任务是设计一个有固定加热半径的供暖器向所有房屋供暖。
 //
 //在加热器的加热半径范围内的每个房屋都可以获得供暖。
@@ -36,31 +38,47 @@ package binarysearch
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 func findRadius(houses []int, heaters []int) int {
-	//找到房子的左边界和右边界
-	left := houses[0]
-	right := houses[len(houses)-1]
-	//随便找一台供暖器，能够到达[min,max]这两个房子，最大值
-	dis := max(abs(heaters[0]-left), abs(heaters[0]-right))
-	if dis == 0 {
+	sort.Ints(heaters)
+	//找到每个房子距离最近供暖器的距离
+	res := 0
+	for _, house := range houses {
+		idx := find(house, heaters)
+		d := abs(heaters[idx] - house)
+		if d > res {
+			res = d
+		}
+	}
+	return res
+}
+
+//找到距离最近house的heater的下标
+//二分查找
+func find(house int, heaters []int) int {
+	if house <= heaters[0] {
 		return 0
 	}
-	//二分查找右边界
+	if house >= heaters[len(heaters)-1] {
+		return len(heaters) - 1
+	}
+	//二分查找找到>=house的右边界
 	l := 0
-	r := dis - 1
+	r := len(heaters) - 1
 	for l < r {
 		mid := l + (r-l)/2
-		if check(houses, heaters, mid) {
+		if heaters[mid] >= house {
 			r = mid
 		} else {
 			l = mid + 1
 		}
 	}
-	return l
-}
-
-func check(houses []int, heaters []int, radius int) bool {
-	//TODO:bst?
-	return true
+	if l == 0 {
+		return 0
+	}
+	if abs(heaters[l]-house) < abs(heaters[l-1]-house) {
+		return l
+	} else {
+		return l - 1
+	}
 }
 
 func max(a int, b int) int {
