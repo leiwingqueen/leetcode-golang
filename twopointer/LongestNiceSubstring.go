@@ -46,7 +46,7 @@ func longestNiceSubstring(s string) string {
 	res := ""
 	for i := 0; i < len(s); i++ {
 		for j := i + 1; j <= len(s); j++ {
-			if j-i > max && match(s, i, j) {
+			if j-i > max && match2(s, i, j) {
 				max = j - i
 				res = s[i:j]
 			}
@@ -72,3 +72,19 @@ func match(s string, i int, j int) bool {
 	}
 	return true
 }
+
+//上面的基础上稍微优化一下
+func match2(s string, i int, j int) bool {
+	lower := 0
+	upper := 0
+	for idx := i; idx < j; idx++ {
+		if s[idx] >= 'a' && s[idx] <= 'z' {
+			lower |= 1 << (s[idx] - 'a')
+		} else {
+			upper |= 1 << (s[idx] - 'A')
+		}
+	}
+	return lower^upper == 0
+}
+
+//TODO:其他解法？
