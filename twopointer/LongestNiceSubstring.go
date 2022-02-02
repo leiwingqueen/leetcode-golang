@@ -87,4 +87,66 @@ func match2(s string, i int, j int) bool {
 	return lower^upper == 0
 }
 
-//TODO:其他解法？
+//分治解法
+func longestNiceSubstring2(s string) string {
+	return dfs([]byte(s), 0, len(s))
+}
+
+func dfs(arr []byte, start int, end int) string {
+	//判断当前字符串是否合法
+	lower := 0
+	upper := 0
+	for idx := start; idx < end; idx++ {
+		if arr[idx] >= 'a' && arr[idx] <= 'z' {
+			lower |= 1 << (arr[idx] - 'a')
+		} else {
+			upper |= 1 << (arr[idx] - 'A')
+		}
+	}
+	xor := lower ^ upper
+	if xor == 0 {
+		return string(arr[start:end])
+	}
+	//根据单独出现的字符串进行分割
+	l := start
+	r := start
+	res := ""
+	for l < end {
+		//找到第一个非单独出现的字符
+		for l < end {
+			idx := 0
+			if arr[l] >= 'a' && arr[l] <= 'z' {
+				idx = int(arr[l] - 'a')
+			} else {
+				idx = int(arr[l] - 'A')
+			}
+			if xor&(1<<idx) == 0 {
+				break
+			}
+			l++
+		}
+		r = l
+		for r < end {
+			idx := 0
+			if arr[r] >= 'a' && arr[r] <= 'z' {
+				idx = int(arr[r] - 'a')
+			} else {
+				idx = int(arr[r] - 'A')
+			}
+			if xor&(1<<idx) != 0 {
+				break
+			}
+			r++
+		}
+		if r-l > len(res) {
+			sub := dfs(arr, l, r)
+			if len(sub) > len(res) {
+				res = sub
+			}
+		}
+		l = r
+	}
+	return res
+}
+
+//TODO:是否还有其他更优的解法？
