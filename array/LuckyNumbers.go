@@ -71,3 +71,41 @@ func luckyNumbers(matrix [][]int) []int {
 	}
 	return res
 }
+
+//分别求出每一行最小的下标和每一列最大的下标
+func luckyNumbers2(matrix [][]int) []int {
+	m := len(matrix)
+	n := len(matrix[0])
+	row := make([]int, m)
+	col := make([]int, n)
+	for i := 0; i < m; i++ {
+		min := math.MaxInt32
+		idx := -1
+		for j := 0; j < n; j++ {
+			if matrix[i][j] < min {
+				min = matrix[i][j]
+				idx = j
+			}
+		}
+		row[i] = idx
+	}
+	for i := 0; i < n; i++ {
+		max := 0
+		idx := -1
+		for j := 0; j < m; j++ {
+			if matrix[j][i] > max {
+				max = matrix[j][i]
+				idx = j
+			}
+		}
+		col[i] = idx
+	}
+	//比较行列分别的下标是否一致
+	res := make([]int, 0)
+	for i := 0; i < m; i++ {
+		if col[row[i]] == i {
+			res = append(res, matrix[i][row[i]])
+		}
+	}
+	return res
+}
