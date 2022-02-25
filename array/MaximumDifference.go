@@ -38,6 +38,7 @@ package array
 //链接：https://leetcode-cn.com/problems/maximum-difference-between-increasing-elements
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+//暴力解法
 func maximumDifference(nums []int) int {
 	n := len(nums)
 	res := -1
@@ -46,6 +47,21 @@ func maximumDifference(nums []int) int {
 			if nums[j] > nums[i] && nums[j]-nums[i] > res {
 				res = nums[j] - nums[i]
 			}
+		}
+	}
+	return res
+}
+
+func maximumDifference2(nums []int) int {
+	n := len(nums)
+	res := -1
+	lMin := nums[0]
+	for i := 1; i < n; i++ {
+		if nums[i] > lMin && nums[i]-lMin > res {
+			res = nums[i] - lMin
+		}
+		if nums[i] < lMin {
+			lMin = nums[i]
 		}
 	}
 	return res
