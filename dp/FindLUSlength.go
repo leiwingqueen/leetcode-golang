@@ -65,3 +65,44 @@ func findLUSlength(a string, b string) int {
 		return l - dp[n1][n2]
 	}
 }
+
+//还是不对
+func findLUSlength2(a string, b string) int {
+	n1 := len(a)
+	n2 := len(b)
+	dp := make([][]int, n1+1)
+	for i := 0; i <= n1; i++ {
+		dp[i] = make([]int, n2+1)
+	}
+	for i := 0; i <= n2; i++ {
+		dp[0][i] = i
+	}
+	for i := 1; i <= n1; i++ {
+		dp[i][0] = i
+	}
+	for i := 1; i <= n1; i++ {
+		for j := 1; j <= n2; j++ {
+			if a[i-1] != b[j-1] {
+				dp[i][j] = max(i, j)
+			} else {
+				dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+			}
+		}
+	}
+	if dp[n1][n2] == 0 {
+		return -1
+	} else {
+		return dp[n1][n2]
+	}
+}
+
+//看了下答案，果然我是个智障
+func findLUSlength3(a string, b string) int {
+	n1 := len(a)
+	n2 := len(b)
+	if a != b {
+		return max(n1, n2)
+	} else {
+		return -1
+	}
+}
