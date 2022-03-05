@@ -69,3 +69,5 @@ func subArrayRanges(nums []int) int64 {
 	}
 	return dp
 }
+
+//TODO:单调栈，这道题就变得贼难
