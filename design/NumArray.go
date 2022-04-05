@@ -40,23 +40,68 @@ package design
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 type NumArray struct {
-	nums []int
+	segment *Segment
 }
 
 func Constructor3(nums []int) NumArray {
-	return NumArray{nums: nums}
+	return NumArray{build(nums, 0, len(nums)-1)}
 }
 
 func (this *NumArray) Update(index int, val int) {
-	this.nums[index] = val
+	this.segment.update(index, val)
 }
 
 func (this *NumArray) SumRange(left int, right int) int {
-	sum := 0
-	for i := left; i < right; i++ {
-		sum += this.nums[i]
-	}
-	return sum
+	return this.segment.sumRange(left, right)
 }
 
-//TODO:需要用线段树来解
+//线段树
+type Segment struct {
+	left  int
+	right int
+	sum   int
+	lNode *Segment
+	rNode *Segment
+}
+
+func build(nums []int, l int, r int) *Segment {
+	if l == r {
+		return &Segment{l, r, nums[l], nil, nil}
+	} else {
+		mid := l + (r-l)/2
+		lNode := build(nums, l, mid)
+		rNode := build(nums, mid+1, r)
+		sum := lNode.sum + rNode.sum
+		return &Segment{l, r, sum, lNode, rNode}
+	}
+}
+
+func (s *Segment) update(idx int, val int) {
+	if s.left == s.right {
+		s.sum = val
+		return
+	}
+	if s.lNode.contain(idx) {
+		s.lNode.update(idx, val)
+	} else {
+		s.rNode.update(idx, val)
+	}
+	s.sum = s.lNode.sum + s.rNode.sum
+}
+
+func (s *Segment) sumRange(l int, r int) int {
+	if s.left == l && s.right == r {
+		return s.sum
+	}
+	if s.lNode.right >= r {
+		return s.lNode.sumRange(l, r)
+	}
+	if s.rNode.left <= l {
+		return s.rNode.sumRange(l, r)
+	}
+	return s.lNode.sumRange(l, s.lNode.right) + s.rNode.sumRange(s.rNode.left, r)
+}
+
+func (s *Segment) contain(idx int) bool {
+	return s.left <= idx && s.right >= idx
+}
