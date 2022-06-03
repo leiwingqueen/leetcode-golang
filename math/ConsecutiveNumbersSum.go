@@ -64,6 +64,7 @@ func consecutiveNumbersSum(n int) int {
 	return res
 }
 
+//通过
 func consecutiveNumbersSum2(n int) int {
 	//二分查找，连续长度为k的总和为sum的连续数组
 	check := func(sum int, k int) bool {
