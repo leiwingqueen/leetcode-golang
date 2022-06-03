@@ -1,5 +1,7 @@
 package math
 
+import "math"
+
 //829. 连续整数求和
 //给定一个正整数 n，返回 连续正整数满足所有数字之和为 n 的组数 。
 //
@@ -55,6 +57,37 @@ func consecutiveNumbersSum(n int) int {
 	}
 	res := 0
 	for i := 1; i <= n; i++ {
+		if check(n, i) {
+			res++
+		}
+	}
+	return res
+}
+
+func consecutiveNumbersSum2(n int) int {
+	//二分查找，连续长度为k的总和为sum的连续数组
+	check := func(sum int, k int) bool {
+		if k > sum {
+			return false
+		}
+		l := 1
+		r := sum - k + 1
+		for l <= r {
+			mid := l + (r-l)/2
+			s := (mid + mid + k - 1) * k / 2
+			if s == sum {
+				return true
+			} else if s < sum {
+				l = mid + 1
+			} else {
+				r = mid - 1
+			}
+		}
+		return false
+	}
+	res := 0
+	//关键一步是这里
+	for i := 1; i <= int(math.Sqrt(float64(2*n))); i++ {
 		if check(n, i) {
 			res++
 		}
