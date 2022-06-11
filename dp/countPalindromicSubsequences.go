@@ -35,20 +35,48 @@ package dp
 //链接：https://leetcode.cn/problems/count-different-palindromic-subsequences
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+//太难了，最终还是看答案
 func countPalindromicSubsequences(s string) int {
-	dp := make([][]int, len(s))
-	for i := 0; i < len(s); i++ {
-		dp[i] = make([]int, len(s))
-	}
-	for i := 0; i < len(s); i++ {
-		dp[i][i] = 1
-	}
-	for i := len(s) - 2; i >= 0; i++ {
-		for j := i + 1; j < len(s); j++ {
-			if s[i] == s[j] {
-			}
-
+	mod := 1_000_000_007
+	dp := make([][][]int, 4)
+	for i := 0; i < 4; i++ {
+		dp[i] = make([][]int, len(s))
+		for j := 0; j < len(s); j++ {
+			dp[i][j] = make([]int, len(s))
 		}
 	}
-	return 0
+	for i := 0; i < 4; i++ {
+		for j := 0; j < len(s); j++ {
+			//dp[i,j,j]
+			if i == int(s[j]-'a') {
+				dp[i][j][j] = 1
+			} else {
+				dp[i][j][j] = 0
+			}
+		}
+	}
+	for j := len(s) - 2; j >= 0; j-- {
+		for k := j + 1; k < len(s); k++ {
+			for i := 0; i < 4; i++ {
+				ch := byte(i + 'a')
+				if ch == s[j] && ch == s[k] {
+					dp[i][j][k] = 2
+					for l := 0; l < 4; l++ {
+						dp[i][j][k] = (dp[i][j][k] + dp[l][j+1][k-1]) % mod
+					}
+				} else if ch == s[j] {
+					dp[i][j][k] = dp[i][j][k-1]
+				} else if ch == s[k] {
+					dp[i][j][k] = dp[i][j+1][k]
+				} else {
+					dp[i][j][k] = dp[i][j+1][k-1]
+				}
+			}
+		}
+	}
+	res := 0
+	for i := 0; i < 4; i++ {
+		res = (res + dp[i][0][len(s)-1]) % mod
+	}
+	return res
 }
