@@ -34,16 +34,26 @@ package hash
 func findAndReplacePattern(words []string, pattern string) []string {
 	res := make([]string, 0)
 	check := func(word string) bool {
-		mp := make(map[byte]byte)
+		if len(word) != len(pattern) {
+			return false
+		}
+		mp1 := make(map[byte]byte)
+		mp2 := make(map[byte]byte)
 		for i := 0; i < len(word); i++ {
 			ch := word[i]
-			v, exist := mp[ch]
-			if exist {
+			if v, exist := mp1[ch]; exist {
 				if v != pattern[i] {
 					return false
 				}
 			} else {
-				mp[ch] = v
+				if v2, e2 := mp2[pattern[i]]; e2 {
+					if v2 != ch {
+						return false
+					}
+				} else {
+					mp1[ch] = pattern[i]
+					mp2[pattern[i]] = ch
+				}
 			}
 		}
 		return true
