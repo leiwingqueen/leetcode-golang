@@ -73,3 +73,34 @@ func distinctNames(ideas []string) int64 {
 	}
 	return res
 }
+
+//map
+func distinctNames2(ideas []string) int64 {
+	mp := make(map[byte]map[string]struct{})
+	for _, s := range ideas {
+		if _, exist := mp[s[0]]; !exist {
+			mp[s[0]] = make(map[string]struct{})
+		}
+		v := mp[s[0]]
+		v[s[1:]] = struct{}{}
+	}
+	var res int64
+	for i := 0; i < 26; i++ {
+		for j := i + 1; j < 26; j++ {
+			s1 := mp[byte(i+'a')]
+			s2 := mp[byte(j+'a')]
+			cnt1 := len(s1)
+			cnt2 := len(s2)
+			if s1 != nil && s2 != nil {
+				for key := range s1 {
+					if _, exist := s2[key]; exist {
+						cnt1--
+						cnt2--
+					}
+				}
+			}
+			res += 2 * int64(cnt1) * int64(cnt2)
+		}
+	}
+	return res
+}
