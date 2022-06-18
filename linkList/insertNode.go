@@ -56,30 +56,30 @@ func insert(aNode *Node, x int) *Node {
 		aNode.Next = node
 		node.Next = aNode
 	}
-	//找到>=x的最小的点
-	pre := aNode
-	cur := aNode.Next
-
-	//避免循环
-	for cur.Next != aNode.Next {
-	}
-	if cur.Val >= x {
-		//插入
-		node := &Node{Val: x}
-		pre.Next = node
-		node.Next = cur
-	} else {
-		//证明所有节点都<x，直接在最小的节点上插入
-		pre = aNode
-		cur = aNode.Next
-		for cur.Next != aNode.Next && cur.Val >= cur.Next.Val {
-			pre = cur
-			cur = cur.Next
+	cur := aNode
+	//找到<=x的最大的点
+	var mx *Node
+	//>=x的最大的点
+	var min *Node
+	for cur.Next != aNode {
+		if cur.Val <= x && (mx == nil || cur.Val > mx.Val) {
+			mx = cur
 		}
-		//插入
+		if cur.Val >= x && (min == nil || cur.Val > min.Val) {
+			min = cur
+		}
+		cur = cur.Next
+	}
+	if mx != nil {
 		node := &Node{Val: x}
-		pre.Next = node
-		node.Next = cur
+		next := mx.Next
+		mx.Next = node
+		node.Next = next
+	} else {
+		node := &Node{Val: x}
+		next := min.Next
+		min.Next = node
+		node.Next = next
 	}
 	return aNode
 }
