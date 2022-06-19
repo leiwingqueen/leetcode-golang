@@ -1,5 +1,7 @@
 package wc298
 
+import "fmt"
+
 //给你一个二进制字符串 s 和一个正整数 k 。
 //
 //请你返回 s 的 最长 子序列，且该子序列对应的 二进制 数字小于等于 k 。
@@ -38,31 +40,38 @@ package wc298
 
 func longestSubsequence(s string, k int) int {
 	var dfs func(n int, sum int) int
+	//即便增加了cache，最后一个用例还是会超时
+	mp := make(map[string]int)
 	dfs = func(n int, sum int) int {
 		if n == 0 {
 			return 0
 		}
+		key := fmt.Sprintf("%d_%d", n, sum)
+		if v, exist := mp[key]; exist {
+			return v
+		}
 		//不选
 		s1 := dfs(n-1, sum)
+		res := s1
+		defer func() {
+			mp[key] = res
+		}()
 		if s[n-1] == '0' || sum&0b01 == 1 {
 			s2 := dfs(n-1, sum>>1) + 1
-			if s1 > s2 {
-				return s1
-			} else {
-				return s2
+			if s2 > s1 {
+				res = s2
 			}
 		} else {
 			tmp := sum >> 1
 			if tmp == 0 {
-				return s1
+				return res
 			}
 			s2 := dfs(n-1, tmp-1) + 1
-			if s1 > s2 {
-				return s1
-			} else {
-				return s2
+			if s2 > s1 {
+				res = s2
 			}
 		}
+		return res
 	}
 	return dfs(len(s), k)
 }
