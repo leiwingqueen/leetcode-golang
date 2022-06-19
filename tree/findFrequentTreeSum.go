@@ -46,6 +46,7 @@ func findFrequentTreeSum(root *TreeNode) []int {
 		}
 		return sum
 	}
+	dfs(root)
 	res := make([]int, 0)
 	for k, v := range mp {
 		if v == mx {
