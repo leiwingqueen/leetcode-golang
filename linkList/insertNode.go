@@ -49,26 +49,32 @@ type Node struct {
 
 func insert(aNode *Node, x int) *Node {
 	if aNode == nil {
-		return &Node{Val: x}
+		node := &Node{Val: x}
+		node.Next = node
+		return node
 	}
 	if aNode.Next == aNode {
 		node := &Node{Val: x}
 		aNode.Next = node
 		node.Next = aNode
+		return aNode
 	}
 	cur := aNode
 	//找到<=x的最大的点
 	var mx *Node
 	//>=x的最大的点
 	var min *Node
-	for cur.Next != aNode {
-		if cur.Val <= x && (mx == nil || cur.Val > mx.Val) {
+	for {
+		if cur.Val <= x && (mx == nil || cur.Val >= mx.Val) {
 			mx = cur
 		}
-		if cur.Val >= x && (min == nil || cur.Val > min.Val) {
+		if cur.Val >= x && (min == nil || cur.Val >= min.Val) {
 			min = cur
 		}
 		cur = cur.Next
+		if cur == aNode {
+			break
+		}
 	}
 	if mx != nil {
 		node := &Node{Val: x}
