@@ -75,3 +75,31 @@ func longestSubsequence(s string, k int) int {
 	}
 	return dfs(len(s), k)
 }
+
+//贪心解法
+func longestSubsequence2(s string, k int) int {
+	cnt := 0
+	//先选择全部的0
+	for i := 0; i < len(s); i++ {
+		if s[i] == '0' {
+			cnt++
+		}
+	}
+	num := 0
+	bit := 1
+	for i := len(s) - 1; i >= 0; i-- {
+		if s[i] == '1' {
+			num += bit
+			if num > k {
+				break
+			}
+			cnt++
+		}
+		//提前退出，避免数据溢出
+		if bit > k {
+			break
+		}
+		bit <<= 1
+	}
+	return cnt
+}
