@@ -1,6 +1,8 @@
 package wc298
 
-import "fmt"
+import (
+	"fmt"
+)
 
 //给你一个二进制字符串 s 和一个正整数 k 。
 //
